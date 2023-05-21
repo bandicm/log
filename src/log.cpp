@@ -82,7 +82,11 @@ void log::setPath() {
    if (dir[dir.length()-1] != '/') {
       dir.push_back('/');
    }
-   path = dir + to_string(moment->tm_year+1900) + '-' + to_string(moment->tm_mon+1) + '-' + to_string(moment->tm_mday) + ".log";
+   
+   stringstream mon, _day;
+   mon << setw(2) << setfill('0') << moment->tm_mon+1;
+   _day << setw(2) << setfill('0') << moment->tm_mday;
+   path = dir + to_string(moment->tm_year+1900) + '-' + mon.str() + '-' + _day.str() + ".log";
 }
 
 void log::setPrefix(string &logline) {
