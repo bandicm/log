@@ -1,8 +1,9 @@
 #include "../lib/log.hpp"
 
-log::log(string _dir, bool _isKeepOpen) {
+log::log(string _dir, bool _isKeepOpen, bool _printInConsole = false) {
    dir = _dir;
    isKeepOpen = _isKeepOpen;
+   printInConsole = _printInConsole;
 
    if (!isdir()) {
       cout << "Eror log dir path invalid!" << endl;
@@ -44,6 +45,10 @@ void log::setMoment() {
 }
 
 void log::put(string logline) {
+   if (printInConsole) {
+      cout << logline << endl;
+   }
+
    setMoment();
    setPrefix(logline);
 
@@ -68,9 +73,7 @@ void log::put(string logline) {
       }
    }
 
-   cout << logline << endl;
    logfile << logline << endl;
-
 
    if (!isKeepOpen && logfile.is_open()) {
       loose();

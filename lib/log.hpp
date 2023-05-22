@@ -14,12 +14,13 @@ class log {
     public:
     string dir;
     bool isKeepOpen;
+    bool printInConsole;
     ofstream logfile;
     struct tm * moment;
     uint day;
     string path;
 
-    log (string _dir, bool _isKeepOpen = true);
+    log (string _dir, bool _isKeepOpen = true, bool _printInConsole = false);
 
     bool isdir();
     bool open();
