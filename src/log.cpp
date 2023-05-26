@@ -6,8 +6,7 @@ log::log(string _dir, bool _isKeepOpen, bool _printInConsole = false) {
    printInConsole = _printInConsole;
 
    if (!isdir()) {
-      cout << "Eror log dir path invalid!" << endl;
-      exit(1);
+      throw "[ERROR] Log dir path invalid ";
    }
 
    setMoment();
@@ -16,8 +15,7 @@ log::log(string _dir, bool _isKeepOpen, bool _printInConsole = false) {
 
    if (isKeepOpen) {
       if (!open()) {
-         cout << "Error opening log file!" << endl;
-         exit(2);
+         throw "[ERROR] Opening log file! ";
       }
    }
 
@@ -60,16 +58,14 @@ void log::put(string logline) {
       setPath();
       if (isKeepOpen) {
          if (!open()) {
-            cout << "Error opening log file!" << endl;
-            exit(3);
+            throw "[ERROR] Opening log file! ";
          }
       }
    }
 
    if (!isKeepOpen || !logfile.is_open()) {      
       if (!open()) {
-         cout << "Error opening log file!" << endl;
-         exit(4);
+         throw "[ERROR] Opening log file! ";
       }
    }
 
