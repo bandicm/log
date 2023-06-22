@@ -1,12 +1,12 @@
 #include "../lib/log.hpp"
 
-log::log(string _dir, bool _isKeepOpen, bool _printInConsole = false) {
+log::log(string _dir, bool _isKeepOpen, bool _printInConsole) {
    dir = _dir;
    isKeepOpen = _isKeepOpen;
    printInConsole = _printInConsole;
 
    if (!isdir()) {
-      throw "[ERROR] Log dir path invalid ";
+      throw string("[ERROR] Log dir path invalid ");
    }
 
    setMoment();
@@ -15,7 +15,7 @@ log::log(string _dir, bool _isKeepOpen, bool _printInConsole = false) {
 
    if (isKeepOpen) {
       if (!open()) {
-         throw "[ERROR] Opening log file! ";
+         throw string("[ERROR] Opening log file! ");
       }
    }
 
@@ -58,14 +58,14 @@ void log::put(string logline) {
       setPath();
       if (isKeepOpen) {
          if (!open()) {
-            throw "[ERROR] Opening log file! ";
+            throw string("[ERROR] Opening log file! ");
          }
       }
    }
 
    if (!isKeepOpen || !logfile.is_open()) {      
       if (!open()) {
-         throw "[ERROR] Opening log file! ";
+         throw string("[ERROR] Opening log file! ");
       }
    }
 
