@@ -1,1 +1,1 @@
-g++ test.cpp ../src/* -o test.o -l sqlite3
+g++ test.cpp ../src/* -o test.o
