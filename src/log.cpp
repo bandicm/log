@@ -43,6 +43,7 @@ void log::setMoment() {
 }
 
 void log::put(string logline) {
+   io.lock();
    if (printInConsole) {
       cout << logline << endl;
    }
@@ -74,6 +75,7 @@ void log::put(string logline) {
    if (!isKeepOpen && logfile.is_open()) {
       loose();
    }
+   io.unlock();
 
 }
 

@@ -7,6 +7,7 @@
 #include <fstream>
 #include <time.h>
 #include <sys/stat.h>
+#include <mutex>
 
 using namespace std;
 
@@ -19,6 +20,7 @@ class log {
     struct tm * moment;
     uint day;
     string path;
+    mutex io;
 
     log (string _dir, bool _isKeepOpen = true, bool _printInConsole = false);
 
