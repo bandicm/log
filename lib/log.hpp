@@ -9,6 +9,8 @@
 #include <sys/stat.h>
 #include <mutex>
 
+namespace marcelb {
+
 using namespace std;
 
 class log {
@@ -35,5 +37,6 @@ class log {
     ~log();
 };
 
+}
 
 #endif

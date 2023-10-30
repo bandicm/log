@@ -1,6 +1,6 @@
 #include "../lib/log.hpp"
 
-log::log(string _dir, bool _isKeepOpen, bool _printInConsole) {
+marcelb::log::log(string _dir, bool _isKeepOpen, bool _printInConsole) {
    dir = _dir;
    isKeepOpen = _isKeepOpen;
    printInConsole = _printInConsole;
@@ -21,28 +21,28 @@ log::log(string _dir, bool _isKeepOpen, bool _printInConsole) {
 
 }
 
-bool log::isdir() {
+bool marcelb::log::isdir() {
    struct stat sb;
    return stat(dir.c_str(), &sb) == 0;
 }
 
-bool log::open() {
+bool marcelb::log::open() {
    logfile = ofstream (path, ios_base::app);
    return logfile.is_open();
 }
 
 
-void log::loose() {
+void marcelb::log::loose() {
    logfile.close();
 }
 
-void log::setMoment() {
+void marcelb::log::setMoment() {
    time_t rawtime;
    time (&rawtime);
    moment = localtime (&rawtime);
 }
 
-void log::put(string logline) {
+void marcelb::log::put(string logline) {
    io.lock();
    if (printInConsole) {
       cout << logline << endl;
@@ -79,7 +79,7 @@ void log::put(string logline) {
 
 }
 
-void log::setPath() {
+void marcelb::log::setPath() {
    if (dir[dir.length()-1] != '/') {
       dir.push_back('/');
    }
@@ -90,7 +90,7 @@ void log::setPath() {
    path = dir + to_string(moment->tm_year+1900) + '-' + mon.str() + '-' + _day.str() + ".log";
 }
 
-void log::setPrefix(string &logline) {
+void marcelb::log::setPrefix(string &logline) {
    stringstream hour, min, sec;
    hour << setw(2) << setfill('0') << moment->tm_hour;
    min << setw(2) << setfill('0') << moment->tm_min;
@@ -100,7 +100,7 @@ void log::setPrefix(string &logline) {
    logline = _logline;
 }
 
-log::~log() {
+marcelb::log::~log() {
    loose();
 }
 
