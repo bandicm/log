@@ -9,6 +9,9 @@
 #include <sys/stat.h>
 #include <mutex>
 
+#if _WIN32
+typedef unsigned int uint;
+#endif
 namespace marcelb {
 
 using namespace std;
