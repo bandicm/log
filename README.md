@@ -10,6 +10,7 @@ Logging errors to a file, daily file rotation, date and time stamps. Configurabl
 - Customizable directory for files
 - Daily file rotation
 - Protection of recording consecutive errors
+- Log levels
 - Thread safe
 - Exceptions
 - The possibility of printing logs in the console
@@ -31,12 +32,16 @@ using namespace marcelb;
 /**
 * Initialization and declaration
 */
-log mylog("../log");
+log mylog("../log", Level::INFO);
 
 /**
 * Put log in file
 */
-mylog.put("[EVENT] Start loging");
+mylog.debug("Debug loging");
+mylog.info("Info loging");
+mylog.warning("Warning loging");
+mylog.error("Error loging");
+mylog.fatal("Fatal loging");
 ```
 ## License
 

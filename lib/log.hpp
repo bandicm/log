@@ -17,11 +17,20 @@ namespace marcelb {
 
 using namespace std;
 
+typedef enum {
+    DEBUG = 0,
+    INFO,
+    WARNING,
+    ERROR,
+    FATAL,
+} Level;
+
 /**
  * Log class - used at the level of one log directory
 */
 class log {
     string dir;
+    Level loglevel;
     bool isKeepOpen;
     bool printInConsole;
     ofstream logfile;
@@ -58,7 +67,12 @@ class log {
     /**
      * Set log line time prefix
     */
-    void setPrefix(string &logline);
+    void setPrefix(string &logline, Level &_level);
+
+    /**
+     * Put string log in file
+    */
+    void put(string logline, Level _level);
 
     public:
 
@@ -68,12 +82,33 @@ class log {
      * optional: a bool variable if it keeps the file open, 
      * and a bool variable if it prints log lines to the console
     */
-    log (string _dir, bool _isKeepOpen = true, bool _printInConsole = false);
+    log (string _dir, Level loglevel = WARNING, bool _isKeepOpen = true, bool _printInConsole = false);
+
 
     /**
-     * Put string log in file
+     * Debug log line
     */
-    void put(string logline);
+    void debug(string logline);
+
+    /**
+     * Info log line
+    */
+    void info(string logline);
+
+    /**
+     * Warning log line
+    */
+    void warning(string logline);
+
+    /**
+     * Error log line
+    */
+    void error(string logline);
+
+    /**
+     * Fatal log line
+    */
+    void fatal(string logline);
 
     /**
      * Destruktor, close log files

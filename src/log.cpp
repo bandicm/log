@@ -1,7 +1,8 @@
 #include "../lib/log.hpp"
 
-marcelb::log::log(string _dir, bool _isKeepOpen, bool _printInConsole) {
+marcelb::log::log(string _dir, Level _loglevel, bool _isKeepOpen, bool _printInConsole) {
    dir = _dir;
+   loglevel = _loglevel;
    isKeepOpen = _isKeepOpen;
    printInConsole = _printInConsole;
 
@@ -42,14 +43,17 @@ void marcelb::log::setMoment() {
    moment = localtime (&rawtime);
 }
 
-void marcelb::log::put(string logline) {
+void marcelb::log::put(string logline, Level _level) {
+   if (_level < loglevel)  {
+      return;
+   }
    io.lock();
    if (printInConsole) {
       cout << logline << endl;
    }
 
    setMoment();
-   setPrefix(logline);
+   setPrefix(logline, _level);
 
    if (day != moment->tm_mday) {
       if (isKeepOpen && logfile.is_open()) {
@@ -90,15 +94,57 @@ void marcelb::log::setPath() {
    path = dir + to_string(moment->tm_year+1900) + '-' + mon.str() + '-' + _day.str() + ".log";
 }
 
-void marcelb::log::setPrefix(string &logline) {
+void marcelb::log::setPrefix(string &logline, Level &_level) {
    stringstream hour, min, sec;
    hour << setw(2) << setfill('0') << moment->tm_hour;
    min << setw(2) << setfill('0') << moment->tm_min;
    sec << setw(2) << setfill('0') << moment->tm_sec;
 
-   string _logline = hour.str() + ':' + min.str() + ':' + sec.str() + ' ' + logline;
-   logline = _logline;
+   string _logline = hour.str() + ':' + min.str() + ':' + sec.str();// + logline;
+   switch (_level) {
+      case DEBUG:
+         _logline += " [DEBUG]   ";
+         break;
+      case INFO:
+         _logline += " [INFO]    ";
+         break;
+      case WARNING:
+         _logline += " [WARNING] ";
+         break;
+      case ERROR:
+         _logline += " [ERROR]   ";
+         break;
+      case FATAL:
+         _logline += " [FATAL]   ";
+         break;
+      default:
+         _logline += " [UNAKOWN] ";
+         break;
+
+   }
+   logline = _logline + logline;
 }
+
+void marcelb::log::debug(string logline) {
+   put(logline, DEBUG);
+}
+
+void marcelb::log::info(string logline) {
+   put(logline, INFO);
+}
+
+void marcelb::log::warning(string logline) {
+   put(logline, WARNING);
+}
+
+void marcelb::log::error(string logline) {
+   put(logline, ERROR);
+}
+
+void marcelb::log::fatal(string logline) {
+   put(logline, FATAL);
+}
+
 
 marcelb::log::~log() {
    loose();
