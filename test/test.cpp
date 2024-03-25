@@ -3,7 +3,7 @@
 #include "../lib/log.hpp"
 
 using namespace std;
-using namespace marcelb;
+using namespace marcelb::logging;
 
 log mylog("../example", false);
 
