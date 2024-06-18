@@ -14,6 +14,7 @@
 typedef unsigned int uint;
 #endif
 namespace marcelb {
+namespace logging {
 
 using namespace std;
 
@@ -116,6 +117,7 @@ class log {
     ~log();
 };
 
+}
 }
 
 #endif

@@ -3,9 +3,9 @@
 #include "../lib/log.hpp"
 
 using namespace std;
-using namespace marcelb;
+using namespace marcelb::logging;
 
-log mylog("../example", Level::FATAL, false);
+log mylog("../example", Level::INFO, false);
 
 int main() {
     mylog.debug("Start debug loging");

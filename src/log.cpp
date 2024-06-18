@@ -1,6 +1,9 @@
 #include "../lib/log.hpp"
 
-marcelb::log::log(string _dir, Level _loglevel, bool _isKeepOpen, bool _printInConsole) {
+namespace marcelb {
+namespace logging {
+
+log::log(string _dir, Level _loglevel, bool _isKeepOpen, bool _printInConsole) {
    dir = _dir;
    loglevel = _loglevel;
    isKeepOpen = _isKeepOpen;
@@ -22,28 +25,28 @@ marcelb::log::log(string _dir, Level _loglevel, bool _isKeepOpen, bool _printInC
 
 }
 
-bool marcelb::log::isdir() {
+bool log::isdir() {
    struct stat sb;
    return stat(dir.c_str(), &sb) == 0;
 }
 
-bool marcelb::log::open() {
+bool log::open() {
    logfile = ofstream (path, ios_base::app);
    return logfile.is_open();
 }
 
 
-void marcelb::log::loose() {
+void log::loose() {
    logfile.close();
 }
 
-void marcelb::log::setMoment() {
+void log::setMoment() {
    time_t rawtime;
    time (&rawtime);
    moment = localtime (&rawtime);
 }
 
-void marcelb::log::put(string logline, Level _level) {
+void log::put(string logline, Level _level) {
    if (_level < loglevel)  {
       return;
    }
@@ -83,7 +86,7 @@ void marcelb::log::put(string logline, Level _level) {
 
 }
 
-void marcelb::log::setPath() {
+void log::setPath() {
    if (dir[dir.length()-1] != '/') {
       dir.push_back('/');
    }
@@ -94,7 +97,7 @@ void marcelb::log::setPath() {
    path = dir + to_string(moment->tm_year+1900) + '-' + mon.str() + '-' + _day.str() + ".log";
 }
 
-void marcelb::log::setPrefix(string &logline, Level &_level) {
+void log::setPrefix(string &logline, Level &_level) {
    stringstream hour, min, sec;
    hour << setw(2) << setfill('0') << moment->tm_hour;
    min << setw(2) << setfill('0') << moment->tm_min;
@@ -125,28 +128,31 @@ void marcelb::log::setPrefix(string &logline, Level &_level) {
    logline = _logline + logline;
 }
 
-void marcelb::log::debug(string logline) {
+void log::debug(string logline) {
    put(logline, DEBUG);
 }
 
-void marcelb::log::info(string logline) {
+void log::info(string logline) {
    put(logline, INFO);
 }
 
-void marcelb::log::warning(string logline) {
+void log::warning(string logline) {
    put(logline, WARNING);
 }
 
-void marcelb::log::error(string logline) {
+void log::error(string logline) {
    put(logline, ERROR);
 }
 
-void marcelb::log::fatal(string logline) {
+void log::fatal(string logline) {
    put(logline, FATAL);
 }
 
 
-marcelb::log::~log() {
+log::~log() {
    loose();
 }
 
+
+}
+}
