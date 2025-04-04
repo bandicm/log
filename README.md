@@ -34,6 +34,12 @@ using namespace marcelb;
 */
 log mylog("../log", Level::INFO);
 
+// or use external writer callback (for occasional writing)
+
+log mylog("../example", [](string log, string path) {
+    cout << log << " " << path << endl;
+}, Level::INFO)
+
 /**
 * Put log in file
 */

@@ -9,6 +9,7 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <mutex>
+#include <functional>
 
 #if _WIN32
 typedef unsigned int uint;
@@ -39,6 +40,7 @@ class log {
     uint day;
     string path;
     mutex io;
+    function<void(string, string)> extWriter;
 
     /**
      * Checking if the path is in the string dir directory
@@ -83,8 +85,10 @@ class log {
      * optional: a bool variable if it keeps the file open, 
      * and a bool variable if it prints log lines to the console
     */
-    log (string _dir, Level loglevel = WARNING, bool _isKeepOpen = true, bool _printInConsole = false);
+    log (string _dir, Level _loglevel = WARNING, bool _isKeepOpen = true, bool _printInConsole = false);
 
+    
+    log (string _dir, function<void(string, string)> _extWriter, Level _loglevel = WARNING, bool _printInConsole = false);
 
     /**
      * Debug log line

@@ -5,6 +5,8 @@
         "fstream": "cpp",
         "*.tcc": "cpp",
         "ostream": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "functional": "cpp",
+        "iomanip": "cpp"
     }
 }

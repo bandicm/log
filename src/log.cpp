@@ -25,19 +25,35 @@ log::log(string _dir, Level _loglevel, bool _isKeepOpen, bool _printInConsole) {
 
 }
 
+log::log (string _dir, function<void(string, string)> _extWriter, Level _loglevel, bool _printInConsole) {
+   dir = _dir;
+   loglevel = _loglevel;
+   extWriter = _extWriter;
+   printInConsole = _printInConsole;
+   setMoment();
+   day = moment->tm_mday;
+   setPath();
+}
+
+
 bool log::isdir() {
    struct stat sb;
    return stat(dir.c_str(), &sb) == 0;
 }
 
 bool log::open() {
+   if (extWriter) {
+      return false;
+   }
    logfile = ofstream (path, ios_base::app);
    return logfile.is_open();
 }
 
 
 void log::loose() {
-   logfile.close();
+   if (!extWriter) {
+      logfile.close();
+   }
 }
 
 void log::setMoment() {
@@ -59,27 +75,31 @@ void log::put(string logline, Level _level) {
    setPrefix(logline, _level);
 
    if (day != moment->tm_mday) {
-      if (isKeepOpen && logfile.is_open()) {
+      if (!extWriter && isKeepOpen && logfile.is_open()) {
          loose();
       }
       day = moment->tm_mday;
       setPath();
-      if (isKeepOpen) {
+      if (!extWriter && isKeepOpen) {
          if (!open()) {
             throw string("[ERROR] Opening log file! ");
          }
       }
    }
 
-   if (!isKeepOpen || !logfile.is_open()) {      
+   if (!extWriter && (!isKeepOpen || !logfile.is_open())) {      
       if (!open()) {
          throw string("[ERROR] Opening log file! ");
       }
    }
 
-   logfile << logline << endl;
+   if (!extWriter) {
+      logfile << logline << endl;
+   } else {
+      extWriter(logline, path);
+   }
 
-   if (!isKeepOpen && logfile.is_open()) {
+   if (!extWriter && !isKeepOpen && logfile.is_open()) {
       loose();
    }
    io.unlock();
