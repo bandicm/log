@@ -3,11 +3,12 @@
 namespace marcelb {
 namespace logging {
 
-log::log(string _dir, Level _loglevel, bool _isKeepOpen, bool _printInConsole) {
+log::log(string _dir, Level _loglevel, bool _isKeepOpen, bool _printInConsole, uint32_t _groupedWriting) {
    dir = _dir;
    loglevel = _loglevel;
    isKeepOpen = _isKeepOpen;
    printInConsole = _printInConsole;
+   groupedWriting = _groupedWriting;
 
    if (!isdir()) {
       throw string("[ERROR] Log dir path invalid ");
@@ -15,6 +16,9 @@ log::log(string _dir, Level _loglevel, bool _isKeepOpen, bool _printInConsole) {
 
    setMoment();
    day = moment->tm_mday;
+   if (groupedWriting) {
+      lastWriting = timelocal(moment);
+   }
    setPath();
 
    if (isKeepOpen) {
@@ -57,20 +61,21 @@ void log::put(string logline, Level _level) {
 
    setMoment();
    setPrefix(logline, _level);
+   midnight();
 
-   if (day != moment->tm_mday) {
-      if (isKeepOpen && logfile.is_open()) {
-         loose();
+   if (groupedWriting) {
+      toWrite.push(logline);
+      if (writableQueue()) {
+         writeQueue();
       }
-      day = moment->tm_mday;
-      setPath();
-      if (isKeepOpen) {
-         if (!open()) {
-            throw string("[ERROR] Opening log file! ");
-         }
-      }
+   } else {
+      write(logline);
    }
+   io.unlock();
+}
 
+
+void log::write(string logline) {
    if (!isKeepOpen || !logfile.is_open()) {      
       if (!open()) {
          throw string("[ERROR] Opening log file! ");
@@ -82,8 +87,49 @@ void log::put(string logline, Level _level) {
    if (!isKeepOpen && logfile.is_open()) {
       loose();
    }
-   io.unlock();
+}
 
+void log::midnight() {
+   if (day != moment->tm_mday) {
+      if (groupedWriting && !toWrite.empty()) {
+         writeQueue();
+      }
+
+      if (isKeepOpen && logfile.is_open()) {
+         loose();
+      }
+      day = moment->tm_mday;
+      setPath();
+      if (isKeepOpen) {
+         if (!open()) {
+            throw string("[ERROR] Opening log file! ");
+         }
+      }
+   }
+}
+
+void log::writeQueue() {
+   string lines;
+   bool notEmpty = !toWrite.empty();
+
+   while (notEmpty) {
+      lines += toWrite.front();
+      toWrite.pop();
+      notEmpty = !toWrite.empty();
+      if (notEmpty) lines += "\n";
+    }
+
+   write(lines);
+}
+
+bool log::writableQueue() {
+   bool _writable = false;
+   auto _time = timelocal(moment);
+   if (_time > lastWriting + groupedWriting) {
+      _writable = true;
+      lastWriting = _time;
+   }
+   return _writable;
 }
 
 void log::setPath() {

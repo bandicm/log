@@ -5,6 +5,9 @@
         "fstream": "cpp",
         "*.tcc": "cpp",
         "ostream": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "queue": "cpp",
+        "array": "cpp",
+        "string_view": "cpp"
     }
 }

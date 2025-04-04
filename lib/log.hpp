@@ -9,6 +9,7 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <mutex>
+#include <queue>
 
 #if _WIN32
 typedef unsigned int uint;
@@ -39,6 +40,9 @@ class log {
     uint day;
     string path;
     mutex io;
+    uint32_t groupedWriting;
+    time_t lastWriting;
+    queue<string> toWrite;
 
     /**
      * Checking if the path is in the string dir directory
@@ -75,6 +79,18 @@ class log {
     */
     void put(string logline, Level _level);
 
+    /**
+     * Write to log file
+     */
+
+    void write(string logline);
+
+    void midnight();
+
+    void writeQueue();
+
+    bool writableQueue();
+
     public:
 
     /**
@@ -83,7 +99,7 @@ class log {
      * optional: a bool variable if it keeps the file open, 
      * and a bool variable if it prints log lines to the console
     */
-    log (string _dir, Level loglevel = WARNING, bool _isKeepOpen = true, bool _printInConsole = false);
+    log (string _dir, Level loglevel = WARNING, bool _isKeepOpen = true, bool _printInConsole = false, uint32_t groupedWriting = 0);
 
 
     /**
